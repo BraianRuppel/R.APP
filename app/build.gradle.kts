@@ -62,4 +62,8 @@ dependencies {
     implementation("androidx.room:room-runtime:2.8.3")
     implementation("androidx.room:room-ktx:2.8.3")
     ksp("androidx.room:room-compiler:2.8.3")
+    //AppCompat
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    //Recyclerview
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 }

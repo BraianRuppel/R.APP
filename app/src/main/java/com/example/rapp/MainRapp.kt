@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.example.rapp.organizador.database.AppDatabase
 import com.example.rapp.organizador.repository.ItemRepository
 
-class MyApp : Application() {
+class MainRapp : Application() {
     lateinit var database: AppDatabase
     lateinit var repository: ItemRepository
 
