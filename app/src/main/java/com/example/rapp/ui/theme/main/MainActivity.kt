@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rapp.MainRapp
 import com.example.rapp.R
+import com.example.rapp.ui.theme.list.MainAdapter
+import com.example.rapp.ui.theme.list.MainViewModel
+import com.example.rapp.ui.theme.list.MainViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 

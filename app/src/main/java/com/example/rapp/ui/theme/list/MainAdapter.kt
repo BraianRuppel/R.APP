@@ -1,4 +1,4 @@
-package com.example.rapp.ui.theme.main
+package com.example.rapp.ui.theme.list
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rapp.R
-import com.example.rapp.organizador.model.Item
+import com.example.rapp.data.model.Item
 
 class MainAdapter(
     private var items: List<Item>,

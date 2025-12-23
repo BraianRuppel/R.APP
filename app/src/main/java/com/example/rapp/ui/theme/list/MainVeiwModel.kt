@@ -1,8 +1,8 @@
-package com.example.rapp.ui.theme.main
+package com.example.rapp.ui.theme.list
 
 import androidx.lifecycle.*
-import com.example.rapp.organizador.model.Item
-import com.example.rapp.organizador.repository.ItemRepository
+import com.example.rapp.data.model.Item
+import com.example.rapp.data.repository.ItemRepository
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: ItemRepository) : ViewModel() {

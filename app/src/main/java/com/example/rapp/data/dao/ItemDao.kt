@@ -1,8 +1,8 @@
-package com.example.rapp.organizador.dao
+package com.example.rapp.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.rapp.organizador.model.Item
+import com.example.rapp.data.model.Item
 
 @Dao
 interface ItemDao {
