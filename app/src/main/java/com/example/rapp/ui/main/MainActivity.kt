@@ -1,4 +1,4 @@
-package com.example.rapp.ui.theme.main
+package com.example.rapp.ui.main
 
 import android.os.Bundle
 import android.widget.Button
@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rapp.MainRapp
 import com.example.rapp.R
-import com.example.rapp.ui.theme.list.MainAdapter
-import com.example.rapp.ui.theme.list.MainViewModel
-import com.example.rapp.ui.theme.list.MainViewModelFactory
+import com.example.rapp.ui.list.MainAdapter
+import com.example.rapp.ui.list.MainViewModel
+import com.example.rapp.ui.list.MainViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.example.rapp.ui.theme.list
+package com.example.rapp.ui.list
 
 import androidx.lifecycle.*
 import com.example.rapp.data.model.Item

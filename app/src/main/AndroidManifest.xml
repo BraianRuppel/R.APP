@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RAPP">
         <activity
-            android:name=".ui.theme.main.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.RAPP">
             <intent-filter>
