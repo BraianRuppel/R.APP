@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="app_name">R.APP</string>
+
     <style name="Theme.Rapp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Colores principales del tema -->
         <item name="colorPrimary">@color/primary</item>
