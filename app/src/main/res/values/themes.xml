@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Tema principal de la app -->
-    <style name="Theme.RAPP" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Personalizá los colores si querés -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryDark">@color/purple_700</item>
-        <item name="colorAccent">@color/teal_200</item>
+<resources>
+
+    <style name="Theme.Rapp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Colores principales del tema -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorPrimaryVariant">@color/primary_light</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary_dark</item>
+
+        <!-- Colores de fondo -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+
+        <!-- Colores de texto -->
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+
+        <!-- Color de error -->
+        <item name="colorError">@color/error</item>
+
+        <!-- Aplicar estilo a TODOS los botones automáticamente -->
+        <item name="materialButtonStyle">@style/AppButton</item>
+
+        <!-- Aplicar estilo a TODOS los TextInputLayout automáticamente -->
+        <item name="textInputStyle">@style/AppEditText</item>
     </style>
+
 </resources>
