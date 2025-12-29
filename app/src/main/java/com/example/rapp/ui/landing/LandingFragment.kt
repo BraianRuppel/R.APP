@@ -1,5 +1,9 @@
 package com.example.rapp.ui.landing
 
+import android.os.Bundle
+import androidx.fragment.R.layout.fragment_landing.xml
+
+
 class LandingFragment : Fragment(R.layout.fragment_landing) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
