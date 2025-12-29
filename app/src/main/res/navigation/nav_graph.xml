@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/landingFragment"
-        android:name="com.example.rapp.organizador.ui.landing.LandingFragment"
+        android:name="com.example.rapp.ui.landing.LandingFragment"
         android:label="Landing"
         tools:layout="@layout/fragment_landing">
 
@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/itemListFragment"
-        android:name="com.example.rapp.organizador.ui.itemlist.ItemListFragment"
+        android:name="com.example.rapp.ui.itemlist.ItemListFragment"
         android:label="Lista de Items"
         tools:layout="@layout/fragment_item_list" />
 
