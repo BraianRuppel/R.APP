@@ -1,4 +1,4 @@
-package com.example.rapp.organizador.model
+package com.example.rapp.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

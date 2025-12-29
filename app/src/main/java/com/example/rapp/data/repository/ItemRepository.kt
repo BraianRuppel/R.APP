@@ -1,8 +1,8 @@
-package com.example.rapp.organizador.repository
+package com.example.rapp.data.repository
 
 import androidx.lifecycle.LiveData
-import com.example.rapp.organizador.dao.ItemDao
-import com.example.rapp.organizador.model.Item
+import com.example.rapp.data.dao.ItemDao
+import com.example.rapp.data.model.Item
 
 class ItemRepository(private val dao: ItemDao) {
 

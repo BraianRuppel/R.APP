@@ -2,8 +2,8 @@ package com.example.rapp
 
 import android.app.Application
 import androidx.room.Room
-import com.example.rapp.organizador.database.AppDatabase
-import com.example.rapp.organizador.repository.ItemRepository
+import com.example.rapp.data.database.AppDatabase
+import com.example.rapp.data.repository.ItemRepository
 
 class MainRapp : Application() {
     lateinit var database: AppDatabase
