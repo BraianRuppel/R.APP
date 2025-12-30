@@ -27,7 +27,7 @@ class ItemListAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = items[position]
-        holder.text.text = item.name
+        holder.text.text = item.text
         holder.btnRemove.setOnClickListener { onRemoveClicked(item) }
     }
 

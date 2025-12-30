@@ -36,7 +36,7 @@ class ItemListFragment : Fragment() {
         // - "findViewById" → "view.findViewById"
 
         val app = requireActivity().application as MainRapp
-        val factory = ItemListViewModelFactory(app.repository)
+        val factory = ItemListViewModelFactory(app.itemRepository)
         viewModel = ViewModelProvider(this, factory)[MainViewModel::class.java]
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
