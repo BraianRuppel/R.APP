@@ -3,8 +3,9 @@ package com.example.rapp.ui.itemlist
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
-class ItemTouchCallback(
-    private val adapter: ItemListAdapter
+class GroupTouchCallback(
+    private val adapter: GroupAdapter,
+    private val onGroupsReordered: (List<com.example.rapp.data.model.Group>) -> Unit
 ) : ItemTouchHelper.Callback() {
 
     override fun getMovementFlags(
@@ -20,7 +21,7 @@ class ItemTouchCallback(
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        adapter.moveItem(viewHolder.adapterPosition, target.adapterPosition)
+        adapter.moveGroup(viewHolder.adapterPosition, target.adapterPosition)
         return true
     }
 
@@ -30,7 +31,7 @@ class ItemTouchCallback(
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
-        adapter.onDragComplete()
+        onGroupsReordered(adapter.getGroups())
     }
 
     override fun isLongPressDragEnabled(): Boolean = false

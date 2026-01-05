@@ -80,7 +80,7 @@ class GroupAdapter(
         }
 
         // Configurar RecyclerView de items
-        val itemAdapter = ItemAdapter(
+        val itemAdapter = ItemListAdapter(
             items = items,
             onItemDelete = onItemDelete,
             onItemsReordered = { reorderedItems ->
