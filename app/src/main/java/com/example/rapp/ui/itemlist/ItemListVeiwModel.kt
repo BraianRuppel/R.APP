@@ -54,7 +54,7 @@ class ItemListViewModel(
         }
     }
 
-    fun removeItem(item: Item) {
+    fun deleteItem(item: Item) {
         viewModelScope.launch {
             itemRepository.delete(item)
         }

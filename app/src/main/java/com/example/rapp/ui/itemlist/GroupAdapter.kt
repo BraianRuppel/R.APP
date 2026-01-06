@@ -22,7 +22,8 @@ class GroupAdapter(
     private val onItemDelete: (Item) -> Unit,
     private val onItemsReordered: (List<Item>) -> Unit,
     private val onGroupsReordered: (List<Group>) -> Unit,
-    private val onItemMovedToGroup: (Long, Long, Int) -> Unit
+    private val onItemMovedToGroup: (Long, Long, Int) -> Unit,
+    private val onAddItemClick: (Long, String) -> Unit  // NUEVO
 ) : RecyclerView.Adapter<GroupAdapter.GroupViewHolder>() {
 
     private var itemTouchHelper: ItemTouchHelper? = null
@@ -33,11 +34,13 @@ class GroupAdapter(
 
     inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvGroupName: TextView = itemView.findViewById(R.id.tvGroupName)
+        val tvItemCount: TextView = itemView.findViewById(R.id.tvItemCount)
         val ivExpandIcon: ImageView = itemView.findViewById(R.id.ivExpandIcon)
         val ivDeleteGroup: ImageView = itemView.findViewById(R.id.ivDeleteGroup)
         val ivDragHandle: ImageView = itemView.findViewById(R.id.ivDragHandle)
         val rvItems: RecyclerView = itemView.findViewById(R.id.rvItems)
         val itemsContainer: View = itemView.findViewById(R.id.itemsContainer)
+        val btnAddItem: View = itemView.findViewById(R.id.btnAddItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupViewHolder {
@@ -52,6 +55,7 @@ class GroupAdapter(
         val items = groupWithItems.items.sortedBy { it.order }.toMutableList()
 
         holder.tvGroupName.text = group.name
+        holder.tvItemCount.text = "(${items.size})"
 
         // Icono de expandir/colapsar
         holder.ivExpandIcon.setImageResource(
@@ -61,14 +65,22 @@ class GroupAdapter(
         // Mostrar/ocultar items
         holder.itemsContainer.visibility = if (group.isExpanded) View.VISIBLE else View.GONE
 
-        // Click para expandir/colapsar
-        holder.itemView.setOnClickListener {
+        // Click en header para expandir/colapsar
+        holder.tvGroupName.setOnClickListener {
+            onGroupToggle(group.id, !group.isExpanded)
+        }
+        holder.ivExpandIcon.setOnClickListener {
             onGroupToggle(group.id, !group.isExpanded)
         }
 
         // Eliminar grupo
         holder.ivDeleteGroup.setOnClickListener {
             onGroupDelete(group)
+        }
+
+        // Agregar item al grupo
+        holder.btnAddItem.setOnClickListener {
+            onAddItemClick(group.id, group.name)
         }
 
         // Drag handle para grupos

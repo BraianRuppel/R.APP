@@ -1,40 +1,72 @@
 package com.example.rapp.ui.itemlist
 
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rapp.R
 import com.example.rapp.data.model.Item
+import java.util.Collections
 
 class ItemListAdapter(
-    private var items: List<Item>,
-    private val onRemoveClicked: (Item) -> Unit
+    private var items: MutableList<Item>,
+    private val onItemDelete: (Item) -> Unit,
+    private val onItemsReordered: (List<Item>) -> Unit
 ) : RecyclerView.Adapter<ItemListAdapter.ItemViewHolder>() {
 
-    class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val text: TextView = view.findViewById(R.id.itemName)
-        val btnRemove: Button = view.findViewById(R.id.btnRemove)
+    private var itemTouchHelper: ItemTouchHelper? = null
+
+    fun setItemTouchHelper(helper: ItemTouchHelper) {
+        this.itemTouchHelper = helper
+    }
+
+    inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvItemText: TextView = itemView.findViewById(R.id.tvItemText)
+        val ivDelete: ImageView = itemView.findViewById(R.id.ivDelete)
+        val ivDragHandle: ImageView = itemView.findViewById(R.id.ivDragHandle)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_list, parent, false)
+            .inflate(R.layout.item_list_item, parent, false)
         return ItemViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = items[position]
-        holder.text.text = item.text
-        holder.btnRemove.setOnClickListener { onRemoveClicked(item) }
+
+        holder.tvItemText.text = item.text
+
+        holder.ivDelete.setOnClickListener {
+            onItemDelete(item)
+        }
+
+        holder.ivDragHandle.setOnTouchListener { _, event ->
+            if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                itemTouchHelper?.startDrag(holder)
+            }
+            false
+        }
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int = items.size
 
-    fun updateData(newItems: List<Item>) {
-        items = newItems
-        notifyDataSetChanged()
+    fun moveItem(fromPosition: Int, toPosition: Int) {
+        Collections.swap(items, fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
     }
+
+    fun onDragComplete() {
+        // Actualizar el orden de los items
+        val reorderedItems = items.mapIndexed { index, item ->
+            item.copy(order = index)
+        }
+        onItemsReordered(reorderedItems)
+    }
+
+    fun getItems(): List<Item> = items.toList()
 }

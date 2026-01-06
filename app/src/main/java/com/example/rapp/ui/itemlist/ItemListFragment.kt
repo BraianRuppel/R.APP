@@ -20,7 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class ItemListFragment : Fragment() {
 
     private lateinit var viewModel: ItemListViewModel
-    private lateinit var adapter: ItemListAdapter
+    private lateinit var groupAdapter: GroupAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var emptyStateView: TextView
 
@@ -80,6 +80,9 @@ class ItemListFragment : Fragment() {
             },
             onItemMovedToGroup = { itemId, newGroupId, newOrder ->
                 viewModel.moveItemToGroup(itemId, newGroupId, newOrder)
+            },
+            onAddItemClick = { groupId, groupName ->
+                showAddItemDialog(groupId, groupName)
             }
         )
 

@@ -15,8 +15,7 @@
         android:layout_height="56dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingHorizontal="12dp"
-        android:background="?attr/selectableItemBackground">
+        android:paddingHorizontal="12dp">
 
         <ImageView
             android:id="@+id/ivDragHandle"
@@ -32,6 +31,7 @@
             android:layout_height="24dp"
             android:layout_marginStart="8dp"
             android:src="@drawable/ic_expand_more"
+            android:background="?attr/selectableItemBackgroundBorderless"
             app:tint="@color/text_secondary"
             android:contentDescription="Expandir/Colapsar"/>
 
@@ -43,13 +43,24 @@
             android:layout_marginStart="12dp"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/text_primary"/>
+            android:textColor="@color/text_primary"
+            android:background="?attr/selectableItemBackground"
+            android:padding="4dp"/>
+
+        <TextView
+            android:id="@+id/tvItemCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginEnd="8dp"/>
 
         <ImageView
             android:id="@+id/ivDeleteGroup"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_delete"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Eliminar grupo"
             app:tint="@color/error"/>
 
@@ -66,7 +77,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/surface"/>
+            android:background="#E0E0E0"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvItems"
@@ -75,6 +86,33 @@
             android:nestedScrollingEnabled="false"
             android:paddingHorizontal="8dp"
             android:paddingTop="8dp"/>
+
+        <!-- Botón para agregar item -->
+        <LinearLayout
+            android:id="@+id/btnAddItem"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="4dp"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_add"
+                app:tint="@color/primary"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Agregar item"
+                android:textColor="@color/primary"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
