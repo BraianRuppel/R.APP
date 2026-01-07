@@ -20,5 +20,6 @@ data class Item(
     val id: Long = 0,
     val text: String,
     val groupId: Long,
-    val order: Int = 0
+    val order: Int = 0,
+    val isFavorite: Boolean = false
 )

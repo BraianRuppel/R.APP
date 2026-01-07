@@ -18,6 +18,16 @@
         android:contentDescription="Arrastrar item"
         app:tint="@color/text_secondary"/>
 
+    <ImageView
+        android:id="@+id/ivFavorite"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_favorite_border"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Marcar como favorito"
+        app:tint="@color/favorite"/>
+
     <TextView
         android:id="@+id/tvItemText"
         android:layout_width="0dp"

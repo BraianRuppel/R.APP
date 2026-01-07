@@ -1,28 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/AppScreenContainer"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:background="@color/background">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bienvenido a Rapp"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Organiza tus listas fácilmente"
+            android:textSize="16sp"
+            android:textColor="@color/text_secondary"/>
+
+    </LinearLayout>
+
+    <!-- Sección de Favoritos -->
+    <TextView
+        android:id="@+id/tvFavoritesTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="⭐ Tus Favoritos"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone"/>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bienvenido a R.APP"
-        style="@style/AppTitle"/>
-
-    <Button
-        android:id="@+id/btnItemList"
+        android:id="@+id/tvEmptyFavorites"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lista de Items"/>
+        android:text="No tienes favoritos aún.\nMarca items con ❤️ para verlos aquí."
+        android:textSize="14sp"
+        android:textColor="@color/text_secondary"
+        android:textAlignment="center"
+        android:padding="24dp"
+        android:visibility="visible"/>
 
-    <Button
-        android:id="@+id/btnFeature2"
-        style="@style/AppButton.Secondary"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFavorites"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        android:visibility="gone"/>
+
+    <!-- Botones de navegación -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Próxima Función"
-        android:enabled="false"/>
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/btnItemList"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="📋 Mis Listas"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/btnFeature2"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="8dp"
+            android:text="🚀 Próxima Función"
+            android:textSize="16sp"
+            android:enabled="false"/>
+
+    </LinearLayout>
 
 </LinearLayout>

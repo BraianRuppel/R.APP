@@ -71,4 +71,10 @@ class ItemListViewModel(
             itemRepository.moveToGroup(itemId, newGroupId, newOrder)
         }
     }
+
+    fun toggleFavorite(item: Item) {
+        viewModelScope.launch {
+            itemRepository.toggleFavorite(item.id, !item.isFavorite)
+        }
+    }
 }

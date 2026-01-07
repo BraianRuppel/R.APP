@@ -15,7 +15,8 @@ import java.util.Collections
 class ItemListAdapter(
     private var items: MutableList<Item>,
     private val onItemDelete: (Item) -> Unit,
-    private val onItemsReordered: (List<Item>) -> Unit
+    private val onItemsReordered: (List<Item>) -> Unit,
+    private val onFavoriteToggle: (Item) -> Unit
 ) : RecyclerView.Adapter<ItemListAdapter.ItemViewHolder>() {
 
     private var itemTouchHelper: ItemTouchHelper? = null
@@ -28,6 +29,7 @@ class ItemListAdapter(
         val tvItemText: TextView = itemView.findViewById(R.id.tvItemText)
         val ivDelete: ImageView = itemView.findViewById(R.id.ivDelete)
         val ivDragHandle: ImageView = itemView.findViewById(R.id.ivDragHandle)
+        val ivFavorite: ImageView = itemView.findViewById(R.id.ivFavorite)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -40,6 +42,15 @@ class ItemListAdapter(
         val item = items[position]
 
         holder.tvItemText.text = item.text
+
+        holder.ivFavorite.setImageResource(
+            if (item.isFavorite) R.drawable.ic_favorite_filled
+            else R.drawable.ic_favorite_border
+        )
+
+        holder.ivFavorite.setOnClickListener {
+            onFavoriteToggle(item)
+        }
 
         holder.ivDelete.setOnClickListener {
             onItemDelete(item)

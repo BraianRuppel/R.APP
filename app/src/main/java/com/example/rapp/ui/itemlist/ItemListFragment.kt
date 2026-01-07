@@ -83,6 +83,9 @@ class ItemListFragment : Fragment() {
             },
             onAddItemClick = { groupId, groupName ->
                 showAddItemDialog(groupId, groupName)
+            },
+            onFavoriteToggle = { item ->
+                viewModel.toggleFavorite(item)
             }
         )
 

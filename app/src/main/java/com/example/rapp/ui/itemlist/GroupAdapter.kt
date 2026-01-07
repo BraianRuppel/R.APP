@@ -23,7 +23,8 @@ class GroupAdapter(
     private val onItemsReordered: (List<Item>) -> Unit,
     private val onGroupsReordered: (List<Group>) -> Unit,
     private val onItemMovedToGroup: (Long, Long, Int) -> Unit,
-    private val onAddItemClick: (Long, String) -> Unit  // NUEVO
+    private val onAddItemClick: (Long, String) -> Unit,
+    private val onFavoriteToggle: (Item) -> Unit
 ) : RecyclerView.Adapter<GroupAdapter.GroupViewHolder>() {
 
     private var itemTouchHelper: ItemTouchHelper? = null
@@ -97,7 +98,8 @@ class GroupAdapter(
             onItemDelete = onItemDelete,
             onItemsReordered = { reorderedItems ->
                 onItemsReordered(reorderedItems)
-            }
+            },
+            onFavoriteToggle = onFavoriteToggle
         )
 
         holder.rvItems.layoutManager = LinearLayoutManager(holder.itemView.context)

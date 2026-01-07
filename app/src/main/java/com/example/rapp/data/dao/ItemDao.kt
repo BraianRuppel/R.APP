@@ -13,6 +13,9 @@ interface ItemDao {
     @Query("SELECT * FROM items ORDER BY `order` ASC")
     fun getAllItems(): LiveData<List<Item>>
 
+    @Query("SELECT * FROM items WHERE isFavorite = 1 ORDER BY `order` ASC")
+    fun getFavoriteItems(): LiveData<List<Item>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: Item)
 
@@ -27,6 +30,9 @@ interface ItemDao {
 
     @Query("UPDATE items SET groupId = :groupId, `order` = :order WHERE id = :itemId")
     suspend fun moveItem(itemId: Long, groupId: Long, order: Int)
+
+    @Query("UPDATE items SET isFavorite = :isFavorite WHERE id = :itemId")
+    suspend fun updateFavorite(itemId: Long, isFavorite: Boolean)
 
     @Transaction
     suspend fun updateItemOrders(items: List<Item>) {

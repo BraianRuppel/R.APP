@@ -8,6 +8,8 @@ class ItemRepository(private val itemDao: ItemDao) {
 
     val allItems: LiveData<List<Item>> = itemDao.getAllItems()
 
+    val favoriteItems: LiveData<List<Item>> = itemDao.getFavoriteItems()
+
     fun getItemsByGroup(groupId: Long): LiveData<List<Item>> {
         return itemDao.getItemsByGroup(groupId)
     }
@@ -30,5 +32,9 @@ class ItemRepository(private val itemDao: ItemDao) {
 
     suspend fun moveToGroup(itemId: Long, newGroupId: Long, newOrder: Int) {
         itemDao.moveItem(itemId, newGroupId, newOrder)
+    }
+
+    suspend fun toggleFavorite(itemId: Long, isFavorite: Boolean) {
+        itemDao.updateFavorite(itemId, isFavorite)
     }
 }

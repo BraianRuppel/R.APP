@@ -11,7 +11,7 @@ import com.example.rapp.data.model.Item
 
 @Database(
     entities = [Group::class, Item::class],
-    version = 2,  // Incrementar versión
+    version = 3,  // Incrementar versión
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
