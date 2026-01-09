@@ -73,5 +73,6 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     // Coordinator Layout
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
-
+    // Window Insets para manejar margenes del celular
+    implementation("androidx.core:core-ktx:1.12.0")
 }

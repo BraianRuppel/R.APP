@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.rapp.MainRapp
 import com.example.rapp.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.rapp.util.applyInsetsWithPadding
+import com.example.rapp.util.applyBottomMargin
 
 class ItemListFragment : Fragment() {
 
@@ -34,6 +36,9 @@ class ItemListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<RecyclerView>(R.id.rvGroups).applyInsetsWithPadding()
+        view.findViewById<FloatingActionButton>(R.id.fabAddGroup).applyBottomMargin()
 
         setupViewModel()
         setupViews(view)

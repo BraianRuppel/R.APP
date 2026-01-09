@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.rapp.util.applyInsetsWithPadding
 import com.example.rapp.MainRapp
 import com.example.rapp.R
 
@@ -29,6 +30,8 @@ class LandingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.applyInsetsWithPadding()
 
         setupViewModel()
         setupViews(view)
