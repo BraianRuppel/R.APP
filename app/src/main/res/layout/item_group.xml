@@ -11,19 +11,13 @@
 
     <!-- Header del grupo (acordeón) -->
     <LinearLayout
+        android:id="@+id/headerContainer"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingHorizontal="12dp">
-
-        <ImageView
-            android:id="@+id/ivDragHandle"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_drag_handle"
-            android:contentDescription="Arrastrar grupo"
-            app:tint="@color/text_secondary"/>
+        android:paddingHorizontal="12dp"
+        android:background="?attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/ivExpandIcon"

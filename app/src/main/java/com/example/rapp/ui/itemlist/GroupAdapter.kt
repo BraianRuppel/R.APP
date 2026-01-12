@@ -34,11 +34,11 @@ class GroupAdapter(
     }
 
     inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val headerContainer: View = itemView.findViewById(R.id.headerContainer)
         val tvGroupName: TextView = itemView.findViewById(R.id.tvGroupName)
         val tvItemCount: TextView = itemView.findViewById(R.id.tvItemCount)
         val ivExpandIcon: ImageView = itemView.findViewById(R.id.ivExpandIcon)
         val ivDeleteGroup: ImageView = itemView.findViewById(R.id.ivDeleteGroup)
-        val ivDragHandle: ImageView = itemView.findViewById(R.id.ivDragHandle)
         val rvItems: RecyclerView = itemView.findViewById(R.id.rvItems)
         val itemsContainer: View = itemView.findViewById(R.id.itemsContainer)
         val btnAddItem: View = itemView.findViewById(R.id.btnAddItem)
@@ -85,11 +85,9 @@ class GroupAdapter(
         }
 
         // Drag handle para grupos
-        holder.ivDragHandle.setOnTouchListener { _, event ->
-            if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                itemTouchHelper?.startDrag(holder)
-            }
-            false
+        holder.headerContainer.setOnLongClickListener {
+            itemTouchHelper?.startDrag(holder)
+            true
         }
 
         // Configurar RecyclerView de items

@@ -28,7 +28,6 @@ class ItemListAdapter(
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvItemText: TextView = itemView.findViewById(R.id.tvItemText)
         val ivDelete: ImageView = itemView.findViewById(R.id.ivDelete)
-        val ivDragHandle: ImageView = itemView.findViewById(R.id.ivDragHandle)
         val ivFavorite: ImageView = itemView.findViewById(R.id.ivFavorite)
     }
 
@@ -56,11 +55,9 @@ class ItemListAdapter(
             onItemDelete(item)
         }
 
-        holder.ivDragHandle.setOnTouchListener { _, event ->
-            if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                itemTouchHelper?.startDrag(holder)
-            }
-            false
+        holder.itemView.setOnLongClickListener {
+            itemTouchHelper?.startDrag(holder)
+            true
         }
     }
 
