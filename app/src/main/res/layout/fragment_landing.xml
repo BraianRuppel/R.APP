@@ -33,6 +33,11 @@
 
     </LinearLayout>
 
+    <!-- Calendario -->
+    <include
+        android:id="@+id/calendarView"
+        layout="@layout/view_calendar"/>
+
     <!-- Sección de Favoritos -->
     <TextView
         android:id="@+id/tvFavoritesTitle"

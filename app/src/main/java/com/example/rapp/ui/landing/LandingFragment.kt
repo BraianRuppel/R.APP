@@ -5,20 +5,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.rapp.util.applyInsetsWithPadding
 import com.example.rapp.MainRapp
 import com.example.rapp.R
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class LandingFragment : Fragment() {
 
     private lateinit var viewModel: LandingViewModel
     private lateinit var favoriteAdapter: FavoriteAdapter
+
+    // Calendario
+    private lateinit var weekPagerAdapter: WeekPagerAdapter
+    private lateinit var viewPagerCalendar: ViewPager2
+    private lateinit var tvMonthYear: TextView
+    private lateinit var ivExpandCollapse: ImageView
+
+    private val monthYearFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es"))
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +48,7 @@ class LandingFragment : Fragment() {
         view.applyInsetsWithPadding()
 
         setupViewModel()
+        setupCalendar(view)
         setupViews(view)
         observeData()
     }
@@ -42,6 +57,76 @@ class LandingFragment : Fragment() {
         val app = requireActivity().application as MainRapp
         val factory = LandingViewModelFactory(app.itemRepository)
         viewModel = ViewModelProvider(this, factory)[LandingViewModel::class.java]
+    }
+
+    private fun setupCalendar(view: View) {
+        val calendarView = view.findViewById<View>(R.id.calendarView)
+
+        viewPagerCalendar = calendarView.findViewById(R.id.viewPagerCalendar)
+        tvMonthYear = calendarView.findViewById(R.id.tvMonthYear)
+        ivExpandCollapse = calendarView.findViewById(R.id.ivExpandCollapse)
+        val ivPrevious = calendarView.findViewById<ImageView>(R.id.ivPrevious)
+        val ivNext = calendarView.findViewById<ImageView>(R.id.ivNext)
+
+        // Configurar adapter
+        weekPagerAdapter = WeekPagerAdapter { day ->
+            Toast.makeText(requireContext(), "Seleccionado: ${day.date}", Toast.LENGTH_SHORT).show()
+            // TODO: Manejar selección de día
+        }
+
+        viewPagerCalendar.adapter = weekPagerAdapter
+        viewPagerCalendar.setCurrentItem(WeekPagerAdapter.START_POSITION, false)
+
+        // Actualizar título cuando cambia la página
+        viewPagerCalendar.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                updateMonthYearTitle(position)
+            }
+        })
+
+        // Actualizar título inicial
+        updateMonthYearTitle(WeekPagerAdapter.START_POSITION)
+
+        // Botones de navegación
+        ivPrevious.setOnClickListener {
+            viewPagerCalendar.currentItem = viewPagerCalendar.currentItem - 1
+        }
+
+        ivNext.setOnClickListener {
+            viewPagerCalendar.currentItem = viewPagerCalendar.currentItem + 1
+        }
+
+        // Botón expandir/colapsar
+        ivExpandCollapse.setOnClickListener {
+            toggleCalendarView()
+        }
+    }
+
+    private fun toggleCalendarView() {
+        val isCurrentlyMonthView = weekPagerAdapter.isMonthView()
+        weekPagerAdapter.setMonthView(!isCurrentlyMonthView)
+
+        // Cambiar icono
+        ivExpandCollapse.setImageResource(
+            if (!isCurrentlyMonthView) R.drawable.ic_expand_less
+            else R.drawable.ic_expand_more
+        )
+
+        // Ajustar altura del ViewPager
+        val params = viewPagerCalendar.layoutParams
+        params.height = if (!isCurrentlyMonthView) {
+            // Vista mensual: 6 filas * 44dp
+            (44 * 6 * resources.displayMetrics.density).toInt()
+        } else {
+            // Vista semanal: 1 fila * 44dp
+            (44 * resources.displayMetrics.density).toInt()
+        }
+        viewPagerCalendar.layoutParams = params
+    }
+
+    private fun updateMonthYearTitle(position: Int) {
+        val date = weekPagerAdapter.getDateForPosition(position)
+        tvMonthYear.text = date.format(monthYearFormatter).replaceFirstChar { it.uppercase() }
     }
 
     private fun setupViews(view: View) {
