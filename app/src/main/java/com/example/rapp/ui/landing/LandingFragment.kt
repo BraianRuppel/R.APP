@@ -32,6 +32,11 @@ class LandingFragment : Fragment() {
     private lateinit var tvMonthYear: TextView
     private lateinit var ivExpandCollapse: ImageView
 
+    private var currentDisplayedDate: LocalDate = LocalDate.now()
+
+    // Bandera para evitar que el callback interfiera durante el cambio de vista
+    private var isChangingView: Boolean = false
+
     private val monthYearFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es"))
 
     override fun onCreateView(
@@ -70,6 +75,7 @@ class LandingFragment : Fragment() {
 
         // Configurar adapter
         weekPagerAdapter = WeekPagerAdapter { day ->
+            currentDisplayedDate = day.date
             Toast.makeText(requireContext(), "Seleccionado: ${day.date}", Toast.LENGTH_SHORT).show()
             // TODO: Manejar selección de día
         }
@@ -80,12 +86,14 @@ class LandingFragment : Fragment() {
         // Actualizar título cuando cambia la página
         viewPagerCalendar.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                updateMonthYearTitle(position)
+                if (isChangingView) return
+                currentDisplayedDate = weekPagerAdapter.getDateForPosition(position)
+                updateMonthYearTitle()
             }
         })
 
         // Actualizar título inicial
-        updateMonthYearTitle(WeekPagerAdapter.START_POSITION)
+        updateMonthYearTitle()
 
         // Botones de navegación
         ivPrevious.setOnClickListener {
@@ -104,7 +112,21 @@ class LandingFragment : Fragment() {
 
     private fun toggleCalendarView() {
         val isCurrentlyMonthView = weekPagerAdapter.isMonthView()
+        val dateToPreserve = currentDisplayedDate
+        isChangingView = true
         weekPagerAdapter.setMonthView(!isCurrentlyMonthView)
+
+        // Calcular la nueva posición para la misma fecha
+        val newPosition = weekPagerAdapter.getPositionForDate(dateToPreserve)
+        viewPagerCalendar.setCurrentItem(newPosition, false)
+
+        // Restaurar la fecha guardada
+        currentDisplayedDate = dateToPreserve
+
+        // Desactivar bandera después de un pequeño delay para asegurar que el ViewPager se estabilizó
+        viewPagerCalendar.post {
+            isChangingView = false
+        }
 
         // Cambiar icono
         ivExpandCollapse.setImageResource(
@@ -122,11 +144,11 @@ class LandingFragment : Fragment() {
             (44 * resources.displayMetrics.density).toInt()
         }
         viewPagerCalendar.layoutParams = params
+        updateMonthYearTitle()
     }
 
-    private fun updateMonthYearTitle(position: Int) {
-        val date = weekPagerAdapter.getDateForPosition(position)
-        tvMonthYear.text = date.format(monthYearFormatter).replaceFirstChar { it.uppercase() }
+    private fun updateMonthYearTitle() {
+        tvMonthYear.text = currentDisplayedDate.format(monthYearFormatter).replaceFirstChar { it.uppercase() }
     }
 
     private fun setupViews(view: View) {

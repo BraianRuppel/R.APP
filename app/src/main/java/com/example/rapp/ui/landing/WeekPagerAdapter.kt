@@ -73,11 +73,14 @@ class WeekPagerAdapter(
             .plusWeeks(weekOffset.toLong())
             .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
 
+        val midWeek = startOfWeek.plusDays(3) // Jueves de esa semana
+        val referenceMonth = midWeek.month
+
         return (0..6).map { dayOffset ->
             val date = startOfWeek.plusDays(dayOffset.toLong())
             CalendarDay(
                 date = date,
-                isCurrentMonth = date.month == today.month,
+                isCurrentMonth = date.month == referenceMonth,
                 isToday = date == today,
                 isSelected = date == selectedDate,
                 hasEvents = false // TODO: Conectar con eventos reales
@@ -114,12 +117,33 @@ class WeekPagerAdapter(
         return days
     }
 
+    // Obtener la fecha representativa de una posición
     fun getDateForPosition(position: Int): LocalDate {
         val offset = position - START_POSITION
         return if (isMonthView) {
-            LocalDate.now().plusMonths(offset.toLong())
+            // En vista mensual: el primer día del mes objetivo
+            LocalDate.now().plusMonths(offset.toLong()).withDayOfMonth(1)
         } else {
-            LocalDate.now().plusWeeks(offset.toLong())
+            // En vista semanal: el jueves de esa semana (representa mejor el mes)
+            val today = LocalDate.now()
+            val startOfWeek = today
+                .plusWeeks(offset.toLong())
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+            startOfWeek.plusDays(3) // Jueves
+        }
+    }
+
+    // Obtener la posición para una fecha específica
+    fun getPositionForDate(date: LocalDate): Int {
+        val today = LocalDate.now()
+        return if (isMonthView) {
+            val monthsDiff = (date.year - today.year) * 12 + (date.monthValue - today.monthValue)
+            START_POSITION + monthsDiff
+        } else {
+            val startOfTargetWeek = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+            val startOfCurrentWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+            val weeksDiff = ((startOfTargetWeek.toEpochDay() - startOfCurrentWeek.toEpochDay()) / 7).toInt()
+            START_POSITION + weeksDiff
         }
     }
 }
