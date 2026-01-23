@@ -76,8 +76,6 @@ class LandingFragment : Fragment() {
         // Configurar adapter
         weekPagerAdapter = WeekPagerAdapter { day ->
             currentDisplayedDate = day.date
-            Toast.makeText(requireContext(), "Seleccionado: ${day.date}", Toast.LENGTH_SHORT).show()
-            // TODO: Manejar selección de día
         }
 
         viewPagerCalendar.adapter = weekPagerAdapter
