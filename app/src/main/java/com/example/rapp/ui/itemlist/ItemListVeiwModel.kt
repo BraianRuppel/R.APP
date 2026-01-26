@@ -9,6 +9,7 @@ import com.example.rapp.data.model.Item
 import com.example.rapp.data.repository.GroupRepository
 import com.example.rapp.data.repository.ItemRepository
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class ItemListViewModel(
     private val groupRepository: GroupRepository,
@@ -75,6 +76,18 @@ class ItemListViewModel(
     fun toggleFavorite(item: Item) {
         viewModelScope.launch {
             itemRepository.toggleFavorite(item.id, !item.isFavorite)
+        }
+    }
+
+    fun setItemDueDate(item: Item, date: LocalDate?) {
+        viewModelScope.launch {
+            itemRepository.setDueDate(item.id, date)
+        }
+    }
+
+    fun toggleItemCompleted(item: Item) {
+        viewModelScope.launch {
+            itemRepository.setCompleted(item.id, !item.isCompleted)
         }
     }
 }

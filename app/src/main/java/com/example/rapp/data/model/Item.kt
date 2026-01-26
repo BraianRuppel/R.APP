@@ -3,6 +3,7 @@ package com.example.rapp.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.ForeignKey
+import java.time.LocalDate
 
 @Entity(
     tableName = "items",
@@ -21,5 +22,7 @@ data class Item(
     val text: String,
     val groupId: Long,
     val order: Int = 0,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val dueDate: LocalDate? = null,
+    val isCompleted: Boolean = false
 )
