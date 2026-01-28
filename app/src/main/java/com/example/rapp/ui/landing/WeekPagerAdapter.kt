@@ -17,6 +17,7 @@ class WeekPagerAdapter(
 
     private var selectedDate: LocalDate = LocalDate.now()
     private var isMonthView: Boolean = false
+    private var datesWithEvents: Set<LocalDate> = emptySet()
 
     // Número de páginas (semanas/meses) hacia atrás y adelante
     companion object {
@@ -67,6 +68,11 @@ class WeekPagerAdapter(
         notifyDataSetChanged()
     }
 
+    fun setDatesWithEvents(dates: List<LocalDate>) {
+        datesWithEvents = dates.toSet()
+        notifyDataSetChanged()
+    }
+
     private fun getWeekDays(weekOffset: Int): List<CalendarDay> {
         val today = LocalDate.now()
         val startOfWeek = today
@@ -83,7 +89,7 @@ class WeekPagerAdapter(
                 isCurrentMonth = date.month == referenceMonth,
                 isToday = date == today,
                 isSelected = date == selectedDate,
-                hasEvents = false // TODO: Conectar con eventos reales
+                hasEvents = datesWithEvents.contains(date)
             )
         }
     }
@@ -92,7 +98,6 @@ class WeekPagerAdapter(
         val today = LocalDate.now()
         val targetMonth = today.plusMonths(monthOffset.toLong())
         val firstDayOfMonth = targetMonth.withDayOfMonth(1)
-        val lastDayOfMonth = targetMonth.with(TemporalAdjusters.lastDayOfMonth())
 
         // Encontrar el domingo antes del primer día del mes
         val startDate = firstDayOfMonth.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
@@ -108,7 +113,7 @@ class WeekPagerAdapter(
                     isCurrentMonth = currentDate.month == targetMonth.month,
                     isToday = currentDate == today,
                     isSelected = currentDate == selectedDate,
-                    hasEvents = false
+                    hasEvents = datesWithEvents.contains(currentDate)
                 )
             )
             currentDate = currentDate.plusDays(1)

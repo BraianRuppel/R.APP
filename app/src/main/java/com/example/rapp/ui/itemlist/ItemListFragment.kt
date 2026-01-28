@@ -1,11 +1,11 @@
 package com.example.rapp.ui.itemlist
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -15,9 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rapp.MainRapp
 import com.example.rapp.R
+import com.example.rapp.data.model.Item
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.example.rapp.util.applyInsetsWithPadding
 import com.example.rapp.util.applyBottomMargin
+import java.time.LocalDate
 
 class ItemListFragment : Fragment() {
 
@@ -91,6 +93,12 @@ class ItemListFragment : Fragment() {
             },
             onFavoriteToggle = { item ->
                 viewModel.toggleFavorite(item)
+            },
+            onDateClick = { item ->
+                showDatePickerDialog(item)
+            },
+            onCompletedToggle = { item ->
+                viewModel.toggleItemCompleted(item)
             }
         )
 
@@ -122,6 +130,41 @@ class ItemListFragment : Fragment() {
     }
 
     // ==================== DIÁLOGOS ====================
+
+    private fun showDatePickerDialog(item: Item) {
+        val today = LocalDate.now()
+        val currentDate = item.dueDate ?: today
+
+        // Opciones: Seleccionar fecha, Quitar fecha, Cancelar
+        val options = if (item.dueDate != null) {
+            arrayOf("Cambiar fecha", "Quitar fecha", "Cancelar")
+        } else {
+            arrayOf("Seleccionar fecha", "Cancelar")
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Fecha de tarea")
+            .setItems(options) { _, which ->
+                when {
+                    options[which] == "Seleccionar fecha" || options[which] == "Cambiar fecha" -> {
+                        DatePickerDialog(
+                            requireContext(),
+                            { _, year, month, dayOfMonth ->
+                                val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                                viewModel.setItemDueDate(item, selectedDate)
+                            },
+                            currentDate.year,
+                            currentDate.monthValue - 1,
+                            currentDate.dayOfMonth
+                        ).show()
+                    }
+                    options[which] == "Quitar fecha" -> {
+                        viewModel.setItemDueDate(item, null)
+                    }
+                }
+            }
+            .show()
+    }
 
     private fun showAddGroupDialog() {
         val dialogView = LayoutInflater.from(requireContext())

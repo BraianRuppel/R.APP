@@ -106,6 +106,11 @@ class LandingFragment : Fragment() {
         ivExpandCollapse.setOnClickListener {
             toggleCalendarView()
         }
+
+        // Observar fechas con items
+        viewModel.datesWithItems.observe(viewLifecycleOwner) { dates ->
+            weekPagerAdapter.setDatesWithEvents(dates)
+        }
     }
 
     private fun toggleCalendarView() {
