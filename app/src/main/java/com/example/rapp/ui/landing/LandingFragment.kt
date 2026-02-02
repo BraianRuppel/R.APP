@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -25,6 +24,7 @@ class LandingFragment : Fragment() {
 
     private lateinit var viewModel: LandingViewModel
     private lateinit var favoriteAdapter: FavoriteAdapter
+    private lateinit var calendarItemAdapter: CalendarItemAdapter
 
     // Calendario
     private lateinit var weekPagerAdapter: WeekPagerAdapter
@@ -32,12 +32,18 @@ class LandingFragment : Fragment() {
     private lateinit var tvMonthYear: TextView
     private lateinit var ivExpandCollapse: ImageView
 
+    // Tareas del día
+    private lateinit var tvSelectedDateTitle: TextView
+    private lateinit var tvNoTasksForDate: TextView
+    private lateinit var rvDateItems: RecyclerView
+
     private var currentDisplayedDate: LocalDate = LocalDate.now()
 
     // Bandera para evitar que el callback interfiera durante el cambio de vista
     private var isChangingView: Boolean = false
 
     private val monthYearFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale("es"))
+    private val dayFormatter = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM", Locale("es"))
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +60,7 @@ class LandingFragment : Fragment() {
 
         setupViewModel()
         setupCalendar(view)
+        setupDateItems(view)
         setupViews(view)
         observeData()
     }
@@ -76,6 +83,7 @@ class LandingFragment : Fragment() {
         // Configurar adapter
         weekPagerAdapter = WeekPagerAdapter { day ->
             currentDisplayedDate = day.date
+            viewModel.selectDate(day.date)
         }
 
         viewPagerCalendar.adapter = weekPagerAdapter
@@ -111,6 +119,26 @@ class LandingFragment : Fragment() {
         viewModel.datesWithItems.observe(viewLifecycleOwner) { dates ->
             weekPagerAdapter.setDatesWithEvents(dates)
         }
+    }
+
+    // Configurar sección de tareas del día
+    private fun setupDateItems(view: View) {
+        tvSelectedDateTitle = view.findViewById(R.id.tvSelectedDateTitle)
+        tvNoTasksForDate = view.findViewById(R.id.tvNoTasksForDate)
+        rvDateItems = view.findViewById(R.id.rvDateItems)
+
+        calendarItemAdapter = CalendarItemAdapter(
+            onCompletedToggle = { item ->
+                viewModel.toggleItemCompleted(item)
+            },
+            onItemClick = { item ->
+                // Navegar a la lista de items
+                findNavController().navigate(R.id.action_landing_to_itemList)
+            }
+        )
+
+        rvDateItems.layoutManager = LinearLayoutManager(requireContext())
+        rvDateItems.adapter = calendarItemAdapter
     }
 
     private fun toggleCalendarView() {
@@ -154,6 +182,20 @@ class LandingFragment : Fragment() {
         tvMonthYear.text = currentDisplayedDate.format(monthYearFormatter).replaceFirstChar { it.uppercase() }
     }
 
+    // Actualizar título de la sección de tareas
+    private fun updateSelectedDateTitle(date: LocalDate) {
+        val today = LocalDate.now()
+        val tomorrow = today.plusDays(1)
+        val yesterday = today.minusDays(1)
+
+        tvSelectedDateTitle.text = when (date) {
+            today -> "📅 Tareas para hoy"
+            tomorrow -> "📅 Tareas para mañana"
+            yesterday -> "📅 Tareas de ayer"
+            else -> "📅 ${date.format(dayFormatter).replaceFirstChar { it.uppercase() }}"
+        }
+    }
+
     private fun setupViews(view: View) {
         // Botón para ir a lista de items
         view.findViewById<Button>(R.id.btnItemList).setOnClickListener {
@@ -186,6 +228,24 @@ class LandingFragment : Fragment() {
                 tvFavoritesTitle?.visibility = View.VISIBLE
                 tvEmptyFavorites?.visibility = View.GONE
                 rvFavorites?.visibility = View.VISIBLE
+            }
+        }
+        
+        // Observar fecha seleccionada
+        viewModel.selectedDate.observe(viewLifecycleOwner) { date ->
+            updateSelectedDateTitle(date)
+        }
+
+        // Observar items del día seleccionado
+        viewModel.itemsForSelectedDate.observe(viewLifecycleOwner) { items ->
+            calendarItemAdapter.submitList(items)
+
+            if (items.isEmpty()) {
+                tvNoTasksForDate.visibility = View.VISIBLE
+                rvDateItems.visibility = View.GONE
+            } else {
+                tvNoTasksForDate.visibility = View.GONE
+                rvDateItems.visibility = View.VISIBLE
             }
         }
     }

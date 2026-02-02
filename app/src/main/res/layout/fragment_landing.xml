@@ -38,6 +38,46 @@
         android:id="@+id/calendarView"
         layout="@layout/view_calendar"/>
 
+    <!-- Sección de tareas del día seleccionado -->
+    <LinearLayout
+        android:id="@+id/selectedDateSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/tvSelectedDateTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tareas para hoy"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"/>
+
+        <TextView
+            android:id="@+id/tvNoTasksForDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No hay tareas para este día"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:textAlignment="center"
+            android:padding="16dp"
+            android:visibility="gone"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDateItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp"/>
+
+    </LinearLayout>
+
     <!-- Sección de Favoritos -->
     <TextView
         android:id="@+id/tvFavoritesTitle"
