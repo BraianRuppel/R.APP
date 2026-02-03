@@ -1,141 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/background">
 
-    <!-- Header -->
-    <LinearLayout
+    <!-- Contenido scrolleable -->
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="24dp">
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/featuresSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bienvenido a Rapp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Organiza tus listas fácilmente"
-            android:textSize="16sp"
-            android:textColor="@color/text_secondary"/>
-
-    </LinearLayout>
-
-    <!-- Calendario -->
-    <include
-        android:id="@+id/calendarView"
-        layout="@layout/view_calendar"/>
-
-    <!-- Sección de tareas del día seleccionado -->
-    <LinearLayout
-        android:id="@+id/selectedDateSection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp">
-
-        <TextView
-            android:id="@+id/tvSelectedDateTitle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tareas para hoy"
-            android:textSize="18sp"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+
+            <!-- Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bienvenido a Rapp"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Organiza tus listas fácilmente"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_secondary"/>
+
+            </LinearLayout>
+
+            <!-- Calendario -->
+            <include
+                android:id="@+id/calendarView"
+                layout="@layout/view_calendar"/>
+
+            <!-- Sección de tareas del día seleccionado -->
+            <LinearLayout
+                android:id="@+id/selectedDateSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/tvSelectedDateTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tareas para hoy"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvNoTasksForDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No hay tareas para este día"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:textAlignment="center"
+                    android:padding="16dp"
+                    android:visibility="gone"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvDateItems"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:clipToPadding="false"
+                    android:paddingBottom="8dp"/>
+
+            </LinearLayout>
+
+            <!-- Sección de Favoritos -->
+            <TextView
+                android:id="@+id/tvFavoritesTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="⭐ Tus Favoritos"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvEmptyFavorites"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No tienes favoritos aún.\nMarca items con ❤️ para verlos aquí."
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:textAlignment="center"
+                android:padding="24dp"
+                android:visibility="visible"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvFavorites"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingBottom="16dp"
+                android:visibility="gone"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    <!-- Carrusel de funciones -->
+    <LinearLayout
+        android:id="@+id/featuresSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/surface"
+        android:elevation="8dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Funciones"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"/>
-
-        <TextView
-            android:id="@+id/tvNoTasksForDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="No hay tareas para este día"
-            android:textSize="14sp"
-            android:textColor="@color/text_secondary"
-            android:textAlignment="center"
-            android:padding="16dp"
-            android:visibility="gone"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvDateItems"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:clipToPadding="false"
             android:paddingBottom="8dp"/>
 
-    </LinearLayout>
-
-    <!-- Sección de Favoritos -->
-    <TextView
-        android:id="@+id/tvFavoritesTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="⭐ Tus Favoritos"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_primary"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp"
-        android:visibility="gone"/>
-
-    <TextView
-        android:id="@+id/tvEmptyFavorites"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No tienes favoritos aún.\nMarca items con ❤️ para verlos aquí."
-        android:textSize="14sp"
-        android:textColor="@color/text_secondary"
-        android:textAlignment="center"
-        android:padding="24dp"
-        android:visibility="visible"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFavorites"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp"
-        android:visibility="gone"/>
-
-    <!-- Botones de navegación -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <Button
-            android:id="@+id/btnItemList"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvFeatures"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="📋 Mis Listas"
-            android:textSize="16sp"/>
-
-        <Button
-            android:id="@+id/btnFeature2"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="8dp"
-            android:text="🚀 Próxima Función"
-            android:textSize="16sp"
-            android:enabled="false"/>
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingHorizontal="16dp"
+            android:orientation="horizontal"/>
 
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

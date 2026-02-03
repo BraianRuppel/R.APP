@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import android.widget.ScrollView
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.rapp.util.applyInsetsWithPadding
+import com.example.rapp.util.applyBottomMargin
 import com.example.rapp.MainRapp
 import com.example.rapp.R
 import java.time.LocalDate
@@ -25,6 +28,7 @@ class LandingFragment : Fragment() {
     private lateinit var viewModel: LandingViewModel
     private lateinit var favoriteAdapter: FavoriteAdapter
     private lateinit var calendarItemAdapter: CalendarItemAdapter
+    private lateinit var featureAdapter: FeatureAdapter
 
     // Calendario
     private lateinit var weekPagerAdapter: WeekPagerAdapter
@@ -56,13 +60,69 @@ class LandingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.applyInsetsWithPadding()
+        // Aplicar insets al ScrollView y al carrusel
+        view.findViewById<ScrollView>(R.id.scrollView).applyInsetsWithPadding()
+        view.findViewById<LinearLayout>(R.id.featuresSection).applyBottomMargin()
 
         setupViewModel()
+        setupFeatures(view)
         setupCalendar(view)
         setupDateItems(view)
-        setupViews(view)
+        setupFavorites(view)
         observeData()
+    }
+
+    // Configurar carrusel de funciones
+    private fun setupFeatures(view: View) {
+        val rvFeatures = view.findViewById<RecyclerView>(R.id.rvFeatures)
+
+        val features = listOf(
+            Feature(
+                id = "lists",
+                title = "Mis Listas",
+                description = "Organiza tus tareas en grupos",
+                icon = R.drawable.ic_list,
+                isEnabled = true
+            ),
+            Feature(
+                id = "notes",
+                title = "Notas",
+                description = "Escribe notas rápidas",
+                icon = R.drawable.ic_notes,
+                isEnabled = false
+            ),
+            Feature(
+                id = "stats",
+                title = "Estadísticas",
+                description = "Revisa tu progreso",
+                icon = R.drawable.ic_stats,
+                isEnabled = false
+            ),
+            Feature(
+                id = "share",
+                title = "Compartir",
+                description = "Comparte listas con otros",
+                icon = R.drawable.ic_share,
+                isEnabled = false
+            ),
+            Feature(
+                id = "settings",
+                title = "Ajustes",
+                description = "Configura la app",
+                icon = R.drawable.ic_settings,
+                isEnabled = false
+            )
+        )
+
+        featureAdapter = FeatureAdapter(features) { feature ->
+            when (feature.id) {
+                "lists" -> findNavController().navigate(R.id.action_landing_to_itemList)
+                else -> Toast.makeText(requireContext(), "Próximamente: ${feature.title}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        rvFeatures.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rvFeatures.adapter = featureAdapter
     }
 
     private fun setupViewModel() {
@@ -141,6 +201,15 @@ class LandingFragment : Fragment() {
         rvDateItems.adapter = calendarItemAdapter
     }
 
+    private fun setupFavorites(view: View) {
+        val rvFavorites = view.findViewById<RecyclerView>(R.id.rvFavorites)
+        favoriteAdapter = FavoriteAdapter { item ->
+            findNavController().navigate(R.id.action_landing_to_itemList)
+        }
+        rvFavorites.layoutManager = LinearLayoutManager(requireContext())
+        rvFavorites.adapter = favoriteAdapter
+    }
+
     private fun toggleCalendarView() {
         val isCurrentlyMonthView = weekPagerAdapter.isMonthView()
         val dateToPreserve = currentDisplayedDate
@@ -194,22 +263,6 @@ class LandingFragment : Fragment() {
             yesterday -> "📅 Tareas de ayer"
             else -> "📅 ${date.format(dayFormatter).replaceFirstChar { it.uppercase() }}"
         }
-    }
-
-    private fun setupViews(view: View) {
-        // Botón para ir a lista de items
-        view.findViewById<Button>(R.id.btnItemList).setOnClickListener {
-            findNavController().navigate(R.id.action_landing_to_itemList)
-        }
-
-        // RecyclerView de favoritos
-        val rvFavorites = view.findViewById<RecyclerView>(R.id.rvFavorites)
-        favoriteAdapter = FavoriteAdapter { item ->
-            // Al hacer click en un favorito, navegar a la lista
-            findNavController().navigate(R.id.action_landing_to_itemList)
-        }
-        rvFavorites.layoutManager = LinearLayoutManager(requireContext())
-        rvFavorites.adapter = favoriteAdapter
     }
 
     private fun observeData() {
