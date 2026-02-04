@@ -84,10 +84,10 @@ class LandingFragment : Fragment() {
                 isEnabled = true
             ),
             Feature(
-                id = "notes",
-                title = "Notas",
-                icon = R.drawable.ic_notes,
-                isEnabled = false
+                id = "events",
+                title = "Eventos",
+                icon = R.drawable.ic_event,
+                isEnabled = true
             ),
             Feature(
                 id = "stats",
@@ -112,6 +112,7 @@ class LandingFragment : Fragment() {
         featureAdapter = FeatureAdapter(features) { feature ->
             when (feature.id) {
                 "lists" -> findNavController().navigate(R.id.action_landing_to_itemList)
+                "events" -> findNavController().navigate(R.id.action_landing_to_events)
                 else -> Toast.makeText(requireContext(), "Próximamente: ${feature.title}", Toast.LENGTH_SHORT).show()
             }
         }

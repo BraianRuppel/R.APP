@@ -15,6 +15,10 @@
         <action
             android:id="@+id/action_landing_to_itemList"
             app:destination="@id/itemListFragment" />
+
+        <action
+            android:id="@+id/action_landing_to_events"
+            app:destination="@id/eventsFragment" />
     </fragment>
 
     <fragment
@@ -22,5 +26,11 @@
         android:name="com.example.rapp.ui.itemlist.ItemListFragment"
         android:label="Lista de Items"
         tools:layout="@layout/fragment_item_list" />
+
+    <fragment
+        android:id="@+id/eventsFragment"
+        android:name="com.example.rapp.ui.events.EventsFragment"
+        android:label="Eventos"
+        tools:layout="@layout/fragment_events" />
 
 </navigation>

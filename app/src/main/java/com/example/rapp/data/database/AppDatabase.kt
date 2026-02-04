@@ -5,14 +5,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.rapp.data.dao.EventDao
 import com.example.rapp.data.dao.GroupDao
 import com.example.rapp.data.dao.ItemDao
+import com.example.rapp.data.model.Event
 import com.example.rapp.data.model.Group
 import com.example.rapp.data.model.Item
 
 @Database(
-    entities = [Group::class, Item::class],
-    version = 4,  // Incrementar versión
+    entities = [Group::class, Item::class, Event::class],
+    version = 5,  // Incrementar versión
     exportSchema = false
 )
 
@@ -22,6 +24,8 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun groupDao(): GroupDao
     abstract fun itemDao(): ItemDao
+    abstract fun eventDao(): EventDao
+
 
     companion object {
         @Volatile
