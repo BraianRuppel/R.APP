@@ -79,36 +79,31 @@ class LandingFragment : Fragment() {
         val features = listOf(
             Feature(
                 id = "lists",
-                title = "Mis Listas",
-                description = "Organiza tus tareas en grupos",
+                title = "Listas",
                 icon = R.drawable.ic_list,
                 isEnabled = true
             ),
             Feature(
                 id = "notes",
                 title = "Notas",
-                description = "Escribe notas rápidas",
                 icon = R.drawable.ic_notes,
                 isEnabled = false
             ),
             Feature(
                 id = "stats",
                 title = "Estadísticas",
-                description = "Revisa tu progreso",
                 icon = R.drawable.ic_stats,
                 isEnabled = false
             ),
             Feature(
                 id = "share",
                 title = "Compartir",
-                description = "Comparte listas con otros",
                 icon = R.drawable.ic_share,
                 isEnabled = false
             ),
             Feature(
                 id = "settings",
                 title = "Ajustes",
-                description = "Configura la app",
                 icon = R.drawable.ic_settings,
                 isEnabled = false
             )

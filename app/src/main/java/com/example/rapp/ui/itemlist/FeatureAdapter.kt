@@ -11,7 +11,6 @@ import com.example.rapp.R
 data class Feature(
     val id: String,
     val title: String,
-    val description: String,
     val icon: Int,
     val isEnabled: Boolean = true
 )
@@ -24,7 +23,6 @@ class FeatureAdapter(
     inner class FeatureViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivIcon: ImageView = itemView.findViewById(R.id.ivFeatureIcon)
         val tvTitle: TextView = itemView.findViewById(R.id.tvFeatureTitle)
-        val tvDescription: TextView = itemView.findViewById(R.id.tvFeatureDescription)
         val disabledOverlay: View = itemView.findViewById(R.id.disabledOverlay)
         val tvComingSoon: TextView = itemView.findViewById(R.id.tvComingSoon)
     }
@@ -40,7 +38,6 @@ class FeatureAdapter(
 
         holder.ivIcon.setImageResource(feature.icon)
         holder.tvTitle.text = feature.title
-        holder.tvDescription.text = feature.description
 
         if (feature.isEnabled) {
             holder.disabledOverlay.visibility = View.GONE
