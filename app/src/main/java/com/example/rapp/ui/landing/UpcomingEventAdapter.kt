@@ -1,4 +1,4 @@
-package com.example.rapp.ui.events
+package com.example.rapp.ui.landing
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -17,33 +17,29 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 
-class EventAdapter(
-    private val onEventClick: (Event) -> Unit,
-    private val onEventLongClick: (Event) -> Unit
-) : ListAdapter<Event, EventAdapter.EventViewHolder>(EventDiffCallback()) {
+class UpcomingEventAdapter(
+    private val onEventClick: (Event) -> Unit
+) : ListAdapter<Event, UpcomingEventAdapter.UpcomingEventViewHolder>(EventDiffCallback()) {
 
-    private val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale("es"))
+    private val dateFormatter = DateTimeFormatter.ofPattern("dd MMM", Locale("es"))
 
-    inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class UpcomingEventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val viewColorIndicator: View = itemView.findViewById(R.id.viewColorIndicator)
         val ivEventIcon: ImageView = itemView.findViewById(R.id.ivEventIcon)
         val tvEventTitle: TextView = itemView.findViewById(R.id.tvEventTitle)
         val tvEventDate: TextView = itemView.findViewById(R.id.tvEventDate)
-        val tvEventDescription: TextView = itemView.findViewById(R.id.tvEventDescription)
         val tvDaysUntil: TextView = itemView.findViewById(R.id.tvDaysUntil)
-        val ivRepeating: ImageView = itemView.findViewById(R.id.ivRepeating)
         val tvAge: TextView = itemView.findViewById(R.id.tvAge)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UpcomingEventViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_event, parent, false)
-        return EventViewHolder(view)
+            .inflate(R.layout.item_upcoming_event, parent, false)
+        return UpcomingEventViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UpcomingEventViewHolder, position: Int) {
         val event = getItem(position)
-        val context = holder.itemView.context
         val today = LocalDate.now()
 
         // Color indicator
@@ -62,58 +58,40 @@ class EventAdapter(
         }
         holder.ivEventIcon.setImageResource(iconRes)
 
-        // Título y descripción
+        // Título
         holder.tvEventTitle.text = event.title
-        holder.tvEventDate.text = event.date.format(dateFormatter)
 
-        if (event.description.isNotBlank()) {
-            holder.tvEventDescription.visibility = View.VISIBLE
-            holder.tvEventDescription.text = event.description
-        } else {
-            holder.tvEventDescription.visibility = View.GONE
-        }
-
-        // Indicador de repetición
-        holder.ivRepeating.visibility = if (event.isRepeatingYearly) View.VISIBLE else View.GONE
-
-        // Mostrar años que cumple (solo para cumpleaños)
-        if (event.type == EventType.BIRTHDAY && event.isRepeatingYearly) {
-            val nextOccurrence = getNextOccurrence(event.date)
-            val age = nextOccurrence.year - event.date.year
-            holder.tvAge.visibility = View.VISIBLE
-            holder.tvAge.text = "Cumple $age años"
-        } else if (event.type == EventType.ANNIVERSARY && event.isRepeatingYearly) {
-            val nextOccurrence = getNextOccurrence(event.date)
-            val years = nextOccurrence.year - event.date.year
-            holder.tvAge.visibility = View.VISIBLE
-            holder.tvAge.text = "$years años"
-        } else {
-            holder.tvAge.visibility = View.GONE
-        }
-
-        // Días hasta el evento
+        // Fecha
         val eventDate = if (event.isRepeatingYearly) {
             getNextOccurrence(event.date)
         } else {
             event.date
         }
+        holder.tvEventDate.text = eventDate.format(dateFormatter)
 
+        // Mostrar años que cumple
+        if (event.type == EventType.BIRTHDAY && event.isRepeatingYearly) {
+            val age = eventDate.year - event.date.year
+            holder.tvAge.visibility = View.VISIBLE
+            holder.tvAge.text = "• $age años"
+        } else if (event.type == EventType.ANNIVERSARY && event.isRepeatingYearly) {
+            val years = eventDate.year - event.date.year
+            holder.tvAge.visibility = View.VISIBLE
+            holder.tvAge.text = "• $years años"
+        } else {
+            holder.tvAge.visibility = View.GONE
+        }
+
+        // Días hasta el evento
         val daysUntil = ChronoUnit.DAYS.between(today, eventDate)
         holder.tvDaysUntil.text = when {
-            daysUntil < 0 -> "Pasado"
             daysUntil == 0L -> "¡Hoy!"
             daysUntil == 1L -> "Mañana"
             else -> "En $daysUntil días"
         }
 
-        // Clicks
         holder.itemView.setOnClickListener {
             onEventClick(event)
-        }
-
-        holder.itemView.setOnLongClickListener {
-            onEventLongClick(event)
-            true
         }
     }
 

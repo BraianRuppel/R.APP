@@ -12,7 +12,6 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/featuresSection"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +52,9 @@
             <!-- Calendario -->
             <include
                 android:id="@+id/calendarView"
-                layout="@layout/view_calendar"/>
+                layout="@layout/view_calendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <!-- Sección de tareas del día seleccionado -->
             <LinearLayout
@@ -87,6 +88,36 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvDateItems"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:clipToPadding="false"
+                    android:paddingBottom="8dp"/>
+
+            </LinearLayout>
+
+            <!-- Sección de eventos próximos -->
+            <LinearLayout
+                android:id="@+id/upcomingEventsSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvUpcomingEventsTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🎉 Eventos próximos"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvUpcomingEvents"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"

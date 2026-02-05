@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.ScrollView
 import android.widget.LinearLayout
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -29,6 +30,7 @@ class LandingFragment : Fragment() {
     private lateinit var favoriteAdapter: FavoriteAdapter
     private lateinit var calendarItemAdapter: CalendarItemAdapter
     private lateinit var featureAdapter: FeatureAdapter
+    private lateinit var upcomingEventAdapter: UpcomingEventAdapter
 
     // Calendario
     private lateinit var weekPagerAdapter: WeekPagerAdapter
@@ -40,6 +42,10 @@ class LandingFragment : Fragment() {
     private lateinit var tvSelectedDateTitle: TextView
     private lateinit var tvNoTasksForDate: TextView
     private lateinit var rvDateItems: RecyclerView
+
+    // Eventos próximos
+    private lateinit var upcomingEventsSection: LinearLayout
+    private lateinit var rvUpcomingEvents: RecyclerView
 
     private var currentDisplayedDate: LocalDate = LocalDate.now()
 
@@ -61,13 +67,14 @@ class LandingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Aplicar insets al ScrollView y al carrusel
-        view.findViewById<ScrollView>(R.id.scrollView).applyInsetsWithPadding()
+        view.findViewById<NestedScrollView>(R.id.scrollView).applyInsetsWithPadding()
         view.findViewById<LinearLayout>(R.id.featuresSection).applyBottomMargin()
 
         setupViewModel()
         setupFeatures(view)
         setupCalendar(view)
         setupDateItems(view)
+        setupUpcomingEvents(view)
         setupFavorites(view)
         observeData()
     }
@@ -123,7 +130,10 @@ class LandingFragment : Fragment() {
 
     private fun setupViewModel() {
         val app = requireActivity().application as MainRapp
-        val factory = LandingViewModelFactory(app.itemRepository)
+        val factory = LandingViewModelFactory(
+            app.itemRepository,
+            app.eventRepository
+        )
         viewModel = ViewModelProvider(this, factory)[LandingViewModel::class.java]
     }
 
@@ -172,8 +182,8 @@ class LandingFragment : Fragment() {
         }
 
         // Observar fechas con items
-        viewModel.datesWithItems.observe(viewLifecycleOwner) { dates ->
-            weekPagerAdapter.setDatesWithEvents(dates)
+        viewModel.allDatesWithContent.observe(viewLifecycleOwner) { dates ->
+            weekPagerAdapter.setDatesWithEvents(dates.toList())
         }
     }
 
@@ -195,6 +205,19 @@ class LandingFragment : Fragment() {
 
         rvDateItems.layoutManager = LinearLayoutManager(requireContext())
         rvDateItems.adapter = calendarItemAdapter
+    }
+
+    // 🆕 Configurar eventos próximos
+    private fun setupUpcomingEvents(view: View) {
+        upcomingEventsSection = view.findViewById(R.id.upcomingEventsSection)
+        rvUpcomingEvents = view.findViewById(R.id.rvUpcomingEvents)
+
+        upcomingEventAdapter = UpcomingEventAdapter { event ->
+            findNavController().navigate(R.id.action_landing_to_events)
+        }
+
+        rvUpcomingEvents.layoutManager = LinearLayoutManager(requireContext())
+        rvUpcomingEvents.adapter = upcomingEventAdapter
     }
 
     private fun setupFavorites(view: View) {
@@ -297,5 +320,46 @@ class LandingFragment : Fragment() {
                 rvDateItems.visibility = View.VISIBLE
             }
         }
+
+        // Observar eventos próximos (incluyendo repetibles)
+        viewModel.allEvents.observe(viewLifecycleOwner) { allEvents ->
+            val today = LocalDate.now()
+            val nextWeek = today.plusDays(7)
+
+            // Filtrar eventos en los próximos 7 días (incluyendo repetibles)
+            val upcomingEvents = allEvents.mapNotNull { event ->
+                val eventDate = if (event.isRepeatingYearly) {
+                    getNextOccurrence(event.date)
+                } else {
+                    event.date
+                }
+
+                if (!eventDate.isBefore(today) && eventDate.isBefore(nextWeek)) {
+                    event to eventDate
+                } else {
+                    null
+                }
+            }
+                .sortedBy { it.second }
+                .map { it.first }
+
+            upcomingEventAdapter.submitList(upcomingEvents)
+
+            if (upcomingEvents.isEmpty()) {
+                upcomingEventsSection.visibility = View.GONE
+            } else {
+                upcomingEventsSection.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    // Función auxiliar para obtener próxima ocurrencia
+    private fun getNextOccurrence(date: LocalDate): LocalDate {
+        val today = LocalDate.now()
+        var nextDate = date.withYear(today.year)
+        if (nextDate.isBefore(today)) {
+            nextDate = nextDate.plusYears(1)
+        }
+        return nextDate
     }
 }

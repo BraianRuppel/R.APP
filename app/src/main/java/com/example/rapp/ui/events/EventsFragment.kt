@@ -1,14 +1,12 @@
 package com.example.rapp.ui.events
 
 import android.app.AlertDialog
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RadioGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -24,6 +22,11 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
+import java.time.Instant
+import java.time.ZoneId
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -159,8 +162,11 @@ class EventsFragment : Fragment() {
         selectedDate = LocalDate.now()
         etDate.setText(selectedDate.format(dateFormatter))
 
+        // Variable para trackear si es cumpleaños
+        var isBirthdaySelected = false
+
         etDate.setOnClickListener {
-            showDatePicker { date ->
+            showDatePicker(forBirthday = isBirthdaySelected) { date ->
                 selectedDate = date
                 etDate.setText(date.format(dateFormatter))
             }
@@ -169,8 +175,24 @@ class EventsFragment : Fragment() {
         // Auto-activar repetición para cumpleaños y aniversarios
         rgEventType.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.rbBirthday, R.id.rbAnniversary -> switchRepeat.isChecked = true
-                R.id.rbOneTime -> switchRepeat.isChecked = false
+                R.id.rbBirthday -> {
+                    switchRepeat.isChecked = true
+                    isBirthdaySelected = true
+                    // Limpiar fecha para que seleccione de nuevo
+                    etDate.setText("")
+                    selectedDate = LocalDate.now().minusYears(25) // Sugerencia inicial
+                }
+                R.id.rbAnniversary -> {
+                    switchRepeat.isChecked = true
+                    isBirthdaySelected = false
+                }
+                R.id.rbOneTime -> {
+                    switchRepeat.isChecked = false
+                    isBirthdaySelected = false
+                }
+                R.id.rbHoliday -> {
+                    isBirthdaySelected = false
+                }
             }
         }
 
@@ -202,23 +224,58 @@ class EventsFragment : Fragment() {
             .show()
     }
 
-    private fun showDatePicker(onDateSelected: (LocalDate) -> Unit) {
-        DatePickerDialog(
-            requireContext(),
-            { _, year, month, dayOfMonth ->
-                onDateSelected(LocalDate.of(year, month + 1, dayOfMonth))
-            },
-            selectedDate.year,
-            selectedDate.monthValue - 1,
-            selectedDate.dayOfMonth
-        ).show()
+    private fun showDatePicker(forBirthday: Boolean = false, onDateSelected: (LocalDate) -> Unit) {
+        val constraintsBuilder = CalendarConstraints.Builder()
+
+        if (forBirthday) {
+            // Para cumpleaños: permitir solo fechas pasadas
+            constraintsBuilder.setValidator(DateValidatorPointBackward.now())
+            // Empezar en 1970 para facilitar navegación
+            val startMillis = LocalDate.of(1940, 1, 1)
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+            constraintsBuilder.setStart(startMillis)
+        }
+
+        val currentMillis = selectedDate
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+
+        val picker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(if (forBirthday) "Fecha de nacimiento" else "Seleccionar fecha")
+            .setSelection(currentMillis)
+            .setCalendarConstraints(constraintsBuilder.build())
+            .build()
+
+        picker.addOnPositiveButtonClickListener { selection ->
+            val date = Instant.ofEpochMilli(selection)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+            onDateSelected(date)
+        }
+
+        picker.show(parentFragmentManager, "datePicker")
     }
 
     private fun showEventDetails(event: Event) {
+        val nextOccurrence = if (event.isRepeatingYearly) getNextOccurrence(event.date) else event.date
+
         AlertDialog.Builder(requireContext())
             .setTitle(event.title)
             .setMessage(buildString {
                 append("📅 ${event.date.format(dateFormatter)}\n")
+
+                // 🆕 Mostrar edad para cumpleaños
+                if (event.type == EventType.BIRTHDAY && event.isRepeatingYearly) {
+                    val age = nextOccurrence.year - event.date.year
+                    append("🎂 Cumple $age años\n")
+                } else if (event.type == EventType.ANNIVERSARY && event.isRepeatingYearly) {
+                    val years = nextOccurrence.year - event.date.year
+                    append("❤️ $years años juntos\n")
+                }
+
                 if (event.description.isNotBlank()) {
                     append("\n${event.description}\n")
                 }
